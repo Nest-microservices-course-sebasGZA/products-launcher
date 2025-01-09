@@ -1,0 +1,6 @@
+*.sql
+dist/
+node_modules/
+.env
+.vscode/
+products/

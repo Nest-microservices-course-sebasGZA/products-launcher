@@ -1,0 +1,65 @@
+version: "3"
+
+services:
+  nats-server:
+    container_name: products-nats-server
+    image: nats:2.10
+    ports:
+      - "8222:8222"
+
+  client-gateway:
+    container_name: products-client-gateway
+    build: ./client-gateway
+    depends_on:
+      - nats-server
+    ports:
+      - "${CLIENT_GATEWAY_PORT}:3000"
+    volumes:
+      - ./client-gateway/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+
+  products-ms:
+    container_name: products-ms
+    build: ./products-ms
+    depends_on:
+      - nats-server
+    volumes:
+      - ./products-ms/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${PRODUCTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - DATABASE_URL=file:./dev.db
+
+  orders-ms:
+    container_name: products-orders-ms
+    build: ./orders-ms
+    depends_on:
+      - nats-server
+      - orders-db
+    volumes:
+      - ./orders-ms/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - DATABASE_URL=${DATABASE_URL}
+      - PRODUCTS_MICROSERVICE_HOST=${PRODUCTS_MICROSERVICE_HOST}
+      - PRODUCTS_MICROSERVICE_PORT=${PRODUCTS_MICROSERVICE_PORT}
+
+  orders-db:
+    container_name: orders-db
+    image: 'postgres:16.2'
+    restart: always
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+
