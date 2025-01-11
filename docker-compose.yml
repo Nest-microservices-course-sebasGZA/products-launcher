@@ -2,13 +2,11 @@ version: "3"
 
 services:
   nats-server:
-    container_name: products-nats-server
     image: nats:2.10
     ports:
       - "8222:8222"
 
   client-gateway:
-    container_name: products-client-gateway
     build: ./client-gateway
     depends_on:
       - nats-server
@@ -22,7 +20,6 @@ services:
       - NATS_SERVERS=${NATS_SERVERS}
 
   products-ms:
-    container_name: products-ms
     build: ./products-ms
     depends_on:
       - nats-server
@@ -35,7 +32,6 @@ services:
       - DATABASE_URL=file:./dev.db
 
   payments-ms:
-    container_name: products-payments-ms
     build: ./payments-ms
     depends_on:
       - nats-server
@@ -53,7 +49,6 @@ services:
       - STRIPE_CANCEL_URL=${PAYMENTS_STRIPE_CANCEL_URL}
 
   orders-ms:
-    container_name: products-orders-ms
     build: ./orders-ms
     depends_on:
       - nats-server
@@ -69,7 +64,6 @@ services:
       - PRODUCTS_MICROSERVICE_PORT=${PRODUCTS_MICROSERVICE_PORT}
 
   orders-db:
-    container_name: orders-db
     image: 'postgres:16.2'
     restart: always
     volumes:
