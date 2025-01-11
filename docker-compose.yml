@@ -34,6 +34,24 @@ services:
       - NATS_SERVERS=${NATS_SERVERS}
       - DATABASE_URL=file:./dev.db
 
+  payments-ms:
+    container_name: products-payments-ms
+    build: ./payments-ms
+    depends_on:
+      - nats-server
+    ports:
+      - "${PAYMENTS_MS_PORT}:3000"
+    volumes:
+      - ./payments-ms/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${PAYMENTS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - STRIPE_KEY=${PAYMENTS_STRIPE_KEY}
+      - STRIPE_ENDPOINT_SECRET=${PAYMENTS_STRIPE_ENDPOINT_SECRET}
+      - STRIPE_SUCCESS_URL=${PAYMENTS_STRIPE_SUCCESS_URL}
+      - STRIPE_CANCEL_URL=${PAYMENTS_STRIPE_CANCEL_URL}
+
   orders-ms:
     container_name: products-orders-ms
     build: ./orders-ms
@@ -46,7 +64,7 @@ services:
     environment:
       - PORT=${ORDERS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
-      - DATABASE_URL=${DATABASE_URL}
+      - DATABASE_URL=${ORDERS_DATABASE_URL}
       - PRODUCTS_MICROSERVICE_HOST=${PRODUCTS_MICROSERVICE_HOST}
       - PRODUCTS_MICROSERVICE_PORT=${PRODUCTS_MICROSERVICE_PORT}
 
@@ -62,4 +80,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+
+  
 
