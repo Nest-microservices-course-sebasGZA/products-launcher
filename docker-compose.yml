@@ -19,6 +19,17 @@ services:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
 
+  auth-ms:
+    build: ./auth-ms
+    depends_on:
+      - nats-server
+    volumes:
+      - ./auth-ms/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${AUTH_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+
   products-ms:
     build: ./products-ms
     depends_on:
