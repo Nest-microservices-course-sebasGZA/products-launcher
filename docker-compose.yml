@@ -19,6 +19,19 @@ services:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
 
+  auth-ms:
+    build: ./auth-ms
+    depends_on:
+      - nats-server
+    volumes:
+      - ./auth-ms/src:/usr/src/app/src
+    command: pnpm run start:dev
+    environment:
+      - PORT=${AUTH_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - DATABASE_URL=${AUTH_MS_DATABASE_URL}
+      - JWT_SECRET=${AUTH_MS_JWT_SECRET}
+
   products-ms:
     build: ./products-ms
     depends_on:
@@ -36,7 +49,7 @@ services:
     depends_on:
       - nats-server
     ports:
-      - "${PAYMENTS_MS_PORT}:3000"
+      - "${PAYMENTS_MS_PORT}:3003"
     volumes:
       - ./payments-ms/src:/usr/src/app/src
     command: pnpm run start:dev
