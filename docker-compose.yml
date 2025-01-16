@@ -30,6 +30,7 @@ services:
       - PORT=${AUTH_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
       - DATABASE_URL=${AUTH_MS_DATABASE_URL}
+      - JWT_SECRET=${AUTH_MS_JWT_SECRET}
 
   products-ms:
     build: ./products-ms
