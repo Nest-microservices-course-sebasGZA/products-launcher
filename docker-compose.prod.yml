@@ -30,6 +30,8 @@ services:
     build: 
       context: ./products-ms
       dockerfile: Dockerfile.prod
+      args:
+        - PRODUCTS_MS_DATABASE_URL=${PRODUCTS_MS_DATABASE_URL}
     image: products-ms-prod
     environment:
       - PORT=${PRODUCTS_MS_PORT}
@@ -51,17 +53,13 @@ services:
       - STRIPE_SUCCESS_URL=${PAYMENTS_STRIPE_SUCCESS_URL}
       - STRIPE_CANCEL_URL=${PAYMENTS_STRIPE_CANCEL_URL}
 
-  # orders-ms:
-  #   build: ./orders-ms
-  #   depends_on:
-  #     - nats-server
-  #     - orders-db
-  #   volumes:
-  #     - ./orders-ms/src:/usr/src/app/src
-  #   command: pnpm run start:dev
-  #   environment:
-  #     - PORT=${ORDERS_MS_PORT}
-  #     - NATS_SERVERS=${NATS_SERVERS}
-  #     - DATABASE_URL=${ORDERS_DATABASE_URL}
-  #     - PRODUCTS_MICROSERVICE_HOST=${PRODUCTS_MICROSERVICE_HOST}
-  #     - PRODUCTS_MICROSERVICE_PORT=${PRODUCTS_MICROSERVICE_PORT}
+  orders-ms:
+    build: 
+      context: ./orders-ms
+      dockerfile: Dockerfile.prod
+      args:
+        - ORDERS_DATABASE_URL=${ORDERS_DATABASE_URL}
+    environment:
+      - PORT=${ORDERS_MS_PORT}
+      - NATS_SERVERS=${NATS_SERVERS}
+      - DATABASE_URL=${ORDERS_DATABASE_URL}
