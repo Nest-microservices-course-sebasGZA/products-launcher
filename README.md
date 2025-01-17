@@ -8,3 +8,9 @@
 
 ## Note
 To remove all containers and volumes run ```docker compose down -v```
+
+## Prod
+
+1. Clone repository
+2. Create a .env based on the .env.template file
+3. Execute command to build images ```docker compose -f docker-compose.prod.yml build```
