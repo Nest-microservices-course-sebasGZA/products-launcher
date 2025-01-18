@@ -59,6 +59,7 @@ services:
       dockerfile: Dockerfile.prod
       args:
         - ORDERS_DATABASE_URL=${ORDERS_DATABASE_URL}
+    image: orders-ms-prod
     environment:
       - PORT=${ORDERS_MS_PORT}
       - NATS_SERVERS=${NATS_SERVERS}
