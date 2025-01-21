@@ -20,5 +20,10 @@ spec:
       containers:
       - image: us-west2-docker.pkg.dev/custom-woodland-448200-m5/store-microservices/client-gateway
         name: client-gateway
+        env: 
+          - name: PORT
+            value: "3000"
+          - name: NATS_SERVERS
+            value: "nats://nats:4222" 
         resources: {}
 status: {}
